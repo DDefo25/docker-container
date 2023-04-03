@@ -1,10 +1,8 @@
 const express = require('express');
-const { route } = require('./api');
-const apiRouter = require('./api');
-
+const apiRoute = require('./api');
 const router = express.Router();
 
-router.use(apiRouter);
+router.use('/api', apiRoute);
 
 router.get('/', (_, res) => {
     res.render('index', {

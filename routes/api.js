@@ -1,10 +1,10 @@
 const express = require('express');
-const booksRouter = require('./books');
-const userRouter = require('./user');
+const booksRoute = require('./books');
+const userRoute = require('./user');
 
 const router = express.Router();
 
-router.use('/api', booksRouter);
-router.use('/api', userRouter);
+router.use('/books', booksRoute);
+router.use('/user', userRoute);
 
 module.exports = router;
