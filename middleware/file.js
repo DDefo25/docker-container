@@ -4,7 +4,7 @@ const path = require('path');
 
 const storage = multer.diskStorage({
   destination(req, file, callback) {
-    const filePath = path.join(`./books/${Date.now()}`);
+    const filePath = path.join(`./booksStorage/${Date.now()}`);
     fs.mkdirSync(filePath, { recursive: true }, (err) => {
       if (err) throw err;
     });

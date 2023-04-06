@@ -1,6 +1,7 @@
 const express = require("express");
 const Library = require('../Library');
 const file = require('../middleware/file');
+const {error404Custom} = require('./error');
 
 const router = express.Router();
 const library = new Library();
@@ -12,19 +13,19 @@ router.get('/', (req, res) => {
   })
 });
 
-router.get('/create', (req, res) => {
-  res.render("books/create", {
-    title: "Книга | добавление",
-    book: {},
-  });
-});
-
 const fileFields = file.fields([
   { name: 'fileBook', maxCount: 1 },
   { name: 'fileCover', maxCount: 1 },
 ]);
 
-router.post('/create', fileFields, (req, res) => {
+router.route('/create')
+.get((req, res) => {
+  res.render("books/create", {
+    title: "Книга | добавление",
+    book: {},
+  });
+})
+.post(fileFields, (req, res) => {
   const data = req.body;
 
   if (req.files) {
@@ -36,31 +37,9 @@ router.post('/create', fileFields, (req, res) => {
 
   try {
     library.add(data);
-    res.redirect('/api/books');
+    res.redirect('..');
   } catch (error) {
-    res.status(404).render('errors/404', {
-      title: error.message,
-    });
-  }
-});
-
-router.post('/', fileFields, (req, res) => {
-  const data = req.body;
-
-  if (req.files) {
-    const { fileBook, fileCover } = req.files;
-    data.fileBook = fileBook[0].path;
-    data.fileName = fileBook[0].filename;
-    data.fileCover = fileCover[0].path;
-  }
-
-  try {
-    res.status(201).json(library.add(data));
-
-  } catch (error) {
-    res.status(404).render('errors/404', {
-      title: error.message,
-    });
+    error404Custom(error, req, res);
   }
 });
 
@@ -72,9 +51,7 @@ router.get('/:id', (req, res) => {
       book: library.get(id)
     })
   } catch (error) {
-    res.status(404).render('errors/404', {
-      title: error.message,
-    });
+    error404Custom(error, req, res);
   }
 });
 
@@ -84,41 +61,54 @@ router.get('/:id/download/:fileType', (req, res) => {
     const book = library.get(id);
     res.download(`${__dirname}/../${book[fileType]}`, book[fileType], (err) => {
       if (err) {
-        res.status(404).render('errors/404', {
-          title: err.message,
-        });
+        error404Custom(err, req, res);
       }
     });
   } catch (error) {
-    res.status(404).render('errors/404', {
-      title: error.message,
-    });
+    error404Custom(error, req, res);
   }
 });
 
-router.put('/:id', (req, res) => {
-  const data = req.body;
+router.route('/update/:id')
+.get((req, res) => {
   const { id } = req.params;
 
   try {
-    res.json(library.update(id, data));
+    res.render('books/update', {
+      title: 'Книга | редактирование',
+      book: library.get(id)
+    })
   } catch (error) {
-    res.status(404).render('errors/404', {
-      title: error.message,
-    });
+    error404Custom(error, req, res);
+  }
+})
+.post(fileFields, (req, res) => {
+  const data = req.body;
+  const { id } = req.params;
+
+  if (req.files) {
+    const { fileBook, fileCover } = req.files;
+    data.fileBook = fileBook[0].path;
+    data.fileName = fileBook[0].filename;
+    data.fileCover = fileCover[0].path;
+  }
+
+  try {
+    library.update(id, data);
+    res.redirect('/api/books/');
+  } catch (error) {
+    error404Custom(error, req, res);
   }
 });
 
-router.delete('/:id', (req, res) => {
+router.get('/delete/:id', (req, res) => {
   const { id } = req.params;
 
   try { 
     library.remove(id);
-    res.json('ок');
+    res.redirect('/api/books/');
   } catch (error) {
-    res.status(404).render('errors/404', {
-      title: error.message,
-    });
+    error404Custom(error, req, res);
   }
 });
 

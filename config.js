@@ -1,3 +1,3 @@
-const config = process.env;
+const config = require('dotenv').config().parsed;
 
 module.exports = config;

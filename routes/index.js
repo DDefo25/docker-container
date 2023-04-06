@@ -5,9 +5,7 @@ const router = express.Router();
 router.use('/api', apiRoute);
 
 router.get('/', (_, res) => {
-    res.render('index', {
-        title: 'Главная'
-    })
+    res.redirect('/api')
 })
 
 module.exports = router;
