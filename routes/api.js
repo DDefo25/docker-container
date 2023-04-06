@@ -8,9 +8,9 @@ router.use('/books', booksRoute);
 router.use('/user', userRoute);
 
 router.get('/', (_, res) => {
-    res.render('index', {
-        title: 'Главная'
-    })
-})
+  res.render('index', {
+    title: 'Главная',
+  });
+});
 
 module.exports = router;

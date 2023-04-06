@@ -1,6 +1,6 @@
-const express = require("express");
-const Library = require('../Library');
-const file = require('../middleware/file');
+const express = require('express');
+const Library = require('../../Library');
+const file = require('../../middleware/file');
 
 const router = express.Router();
 const library = new Library();
@@ -16,20 +16,20 @@ const fileFields = file.fields([
 
 router.post('/', fileFields, (req, res) => {
   const data = req.body;
- 
-   if (req.files) {
-     const { fileBook, fileCover } = req.files;
-     data.fileBook = fileBook[0].path;
-     data.fileName = fileBook[0].filename;
-     data.fileCover = fileCover[0].path;
-   }
- 
-   try {
-     res.status(201).json(library.add(data));
-   } catch (error) {
-     res.status(404).json({ error: error.message });
-   }
- });
+
+  if (req.files) {
+    const { fileBook, fileCover } = req.files;
+    data.fileBook = fileBook[0].path;
+    data.fileName = fileBook[0].filename;
+    data.fileCover = fileCover[0].path;
+  }
+
+  try {
+    res.status(201).json(library.add(data));
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
 
 router.get('/:id', (req, res) => {
   const { id } = req.params;
@@ -54,7 +54,7 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
-  try { 
+  try {
     library.remove(id);
     res.json('ок');
   } catch (error) {
