@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "pm2 start index.js",
+    "dev": "nodemon src/index.js",
+    "start": "pm2 start src/index.js",
     "lint": "eslint .",
     "build": "echo This is a static template, there is no bundler or bundling involved!"
   },
